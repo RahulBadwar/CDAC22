@@ -1,0 +1,15 @@
+import java.util.*;
+class A12{
+	public static void main(String []args){
+		Scanner sc= new Scanner(System.in);
+		System.out.println("Enter a radius");
+		double r= sc.nextDouble();
+		final double pi=(22/7);
+
+		double p  = pi*r*2;
+		double a = pi*r*r;
+		System.out.println("Perimeter is ="+p);
+		System.out.println("Area is ="+a);
+
+	}
+}
