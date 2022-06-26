@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+      $(() => {
+        console.log("dom loaded");
+        $("#b1").click(() => {
+          console.log("b1 is clicked");
+          let input = {
+            subno: $("#t1").val(),
+            sub: $("#t2").val(),
+            mark: $("#t3").val(),
+          };
+          console.log(input);
+          let para1 = {
+            data: input,
+            url: "http://localhost:503/add",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              console.log("suceess in add");
+            },
+
+            error: (datagivenbyserver) => {
+              console.log("failed");
+            },
+          };
+          $.ajax(para1);
+        });
+
+        //on blur event
+        $("#t1").blur(() => {
+          console.log("in blur event");
+          let input = { subno: $("#t1").val() };
+
+          let para1 = {
+            data: input,
+            url: "http://localhost:503/blur",
+            type: "get",
+            dataType: "json",
+            success: (data) => {
+              console.log("suceess in blur");
+              //console.log(data[0].subno);
+              if (data.length > 0) {
+                console.log(data);
+                $("#t2").val(data[0].sub);
+                $("#t3").val(data[0].mark);
+                $("#m1").text("present");
+                $("#b1").prop("disabled", true);
+                $("#b2").prop("disabled", false);
+                $("#b3").prop("disabled", false);
+              } else {
+                $("#t2").val("");
+                $("#t3").val("");
+                $("#m1").text(" Not present");
+                $("#b1").prop("disabled", false);
+                $("#b2").prop("disabled", true);
+                $("#b3").prop("disabled", true);
+              }
+            },
+
+            error: (data) => {
+              console.log("failed");
+            },
+          };
+          $.ajax(para1);
+        });
+
+        $("#b2").click(() => {
+          let input = {
+            subno: $("#t1").val(),
+            sub: $("#t2").val(),
+            mark: $("#t3").val(),
+          };
+          console.log("in update event");
+          let para1 = {
+            data: input,
+            url: "http://localhost:503/update",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              console.log("suceess in update");
+            },
+
+            error: (datagivenbyserver) => {
+              console.log("failed");
+            },
+          };
+          $.ajax(para1);
+        });
+
+        //delete event
+        $("#b3").click(() => {
+            console.log("in delete event");
+          let input = { subno: $("#t1").val() };
+          let para1 = {
+            data: input,
+            url: "http://localhost:503/delete",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              console.log("suceess in delete");
+            },
+
+            error: (datagivenbyserver) => {
+              console.log("failed");
+            },
+          };
+          $.ajax(para1);
+
+        });
+showAll();
+        function showAll(){
+            console.log("in showall event");
+          let input = {  };
+          let para1 = {
+            data: input,
+            url: "http://localhost:503/showall",
+            type: "get",
+            dataType: "json",
+            success: (data) => {
+              console.log("suceess in showall");
+              if(data.length>0){
+                  let x1="";
+                  for (let i = 0; i < data.length; i++) {
+                      let y=data[i].subno+" "+data[i].sub+" "+data[i].mark;
+                      x1=x1+"<br/>"+y;
+                      
+                  }
+                  $("#m2").html(x1);
+              }
+            },
+
+            error: (datagivenbyserver) => {
+              console.log("failed");
+            },
+          };
+          $.ajax(para1);
+        }
+        
+      });
+    </script>
+  </head>
+  <body>
+    <input type="text" placeholder="Enter a subject number" id="t1" /><span
+      id="m1"
+      >Activity</span
+    >
+    <br />
+    <input type="text" placeholder="Enter a subject name" id="t2" />
+    <br />
+    <input type="text" placeholder="Enter a marks" id="t3" />
+    <br />
+    <input type="button" value="ADD" id="b1" />
+    <input type="button" value="UPDATE" id="b2" />
+    <input type="button" value="DELETE" id="b3" />
+    <hr>
+    <p id="m2">message</p>
+  </body>
+</html>
