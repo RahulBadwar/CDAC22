@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+      $(() => {
+        showContents();
+
+        function showContents() {
+          let para1 = {
+            data: {},
+            url: "http://localhost:502/getAll",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              if (datagivenbyserver.status == true) {
+                let array = datagivenbyserver.itemdetails;
+                console.log(array);
+                let x = "";
+                for (let i = 0; i < array.length; i++) {
+                  let y =
+                    array[i].itam_no +
+                    " " +
+                    array[i].item_name +
+                    " " +
+                    array[i].item_price;
+                  x = x + "<br/>" + y;
+                }
+
+                console.log(x);
+                $("#p1").html(x);
+              }
+            },
+            error: (datagivenbyserver) => {},
+          };
+          $.ajax(para1);
+        }
+        $("#b1").click(() => {
+          let input = {
+            no: $("#t1").val(),
+            name: $("#t2").val(),
+            price: $("#t3").val(),
+          };
+          console.log(input.no);
+          console.log(input);
+
+          let para = {
+            data: input,
+            url: "http://localhost:502/add",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              console.log(datagivenbyserver);
+              console.log("suceess in add");
+              showContents();
+
+            },
+
+            error: (datagivenbyserver) => {
+              console.log("failed");
+            },
+          };
+
+          $.ajax(para);
+        });
+
+        $("#t1").blur(() => {
+          let input = { no: $("#t1").val() };
+          console.log("in blur event");
+          let para = {
+            data: input,
+            url: "http://localhost:502/blur",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              // console.log(datagivenbyserver);
+
+              console.log("suceess");
+              console.log(datagivenbyserver);
+              if (datagivenbyserver.status) {
+                $("#a1").text("item is present");
+                $("#t2").val(datagivenbyserver.itemdetail.item_name);
+                $("#t3").val(datagivenbyserver.itemdetail.item_price);
+                document.querySelector("#b1").disabled = true;
+                document.querySelector("#b2").disabled = false;
+                $("#b3").prop("disabled", false);
+              } else {
+                $("#a1").text("item is not present");
+                document.querySelector("#b2").disabled = true;
+                document.querySelector("#b1").disabled = false;
+                $("#b3").prop("disabled", true);
+
+                $("#t2").val("");
+                $("#t3").val("");
+              }
+            },
+
+            error: (datagivenbyserver) => {},
+          };
+
+          $.ajax(para);
+        });
+
+        $("#b2").click(() => {
+          let input = {
+            no: $("#t1").val(),
+            name: $("#t2").val(),
+            price: $("#t3").val(),
+          };
+          console.log("in update event");
+          console.log(input);
+          let para = {
+            data: input,
+            url: "http://localhost:502/update",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              // console.log(datagivenbyserver);
+
+              console.log("suceess");
+              console.log(datagivenbyserver);
+              if (datagivenbyserver.status) {
+                  showContents();
+                $("#a1").text("item is present");
+                $("#t2").val(datagivenbyserver.itemdetail.item_name);
+                $("#t3").val(datagivenbyserver.itemdetail.item_price);
+                document.querySelector("#b1").disabled = true;
+              } else {
+                $("#a1").text("item is not present");
+                document.querySelector("#b2").disabled = true;
+              }
+            },
+
+            error: (datagivenbyserver) => {},
+          };
+
+          $.ajax(para);
+        });
+        //remove event
+        $("#b3").click(() => {
+          console.log("remove");
+          let input = {
+            no: $("#t1").val(),
+            name: $("#t2").val(),
+            price: $("#t3").val(),
+          };
+
+          let para = {
+            data: input,
+            url: "http://localhost:502/remove",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              console.log("success in remove");
+              showContents();
+            },
+
+            error: (datagivenbyserver) => {
+              console.log("failure in remove");
+            },
+          };
+          $.ajax(para);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <input type="text" id="t1" placeholder="Itam number" /><span id="a1"
+      >Activity</span
+    >
+    <br />
+    <input type="text" id="t2" placeholder="Itam name" />
+    <br />
+    <input type="text" id="t3" placeholder="Item price" />
+    <br />
+    <input type="button" value="ADD" id="b1" /><span></span
+    ><input type="button" id="b2" value="UPDATE" /><span></span
+    ><input type="button" id="b3" value="REMOVE" />
+    <hr />
+    <p id="p1">Output will be here</p>
+  </body>
+</html>
